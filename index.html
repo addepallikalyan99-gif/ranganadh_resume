@@ -8,8 +8,10 @@
     <style>
         :root {
             --bg-dark: #05070a;
+            --bg-gradient: linear-gradient(135deg, #0a1428 0%, #05070a 100%);
             --card-bg: rgba(255, 255, 255, 0.03);
             --accent-cyan: #00f2fe;
+            --accent-purple: #7000ff;
             --text-gray: #a0a0a0;
             --glass-border: rgba(255, 255, 255, 0.1);
         }
@@ -18,14 +20,100 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
             color: #ffffff;
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Hero Section with Skyline Background */
+        /* Animated Background Gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 242, 254, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(112, 0, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-100px) translateX(50px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 7, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 15px 50px;
+            background: rgba(5, 7, 10, 0.95);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent-cyan);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Hero Section */
         .hero {
             height: 100vh;
             display: flex;
@@ -34,224 +122,538 @@
             align-items: center;
             text-align: center;
             position: relative;
-            background: radial-gradient(circle at 50% 40%, #101a2b, var(--bg-dark));
             padding: 20px;
+            z-index: 2;
         }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 350px;
-            background-image: url('https://www.transparenttextures.com/patterns/city-lights.png');
-            opacity: 0.15;
-            mask-image: linear-gradient(to top, black, transparent);
-            -webkit-mask-image: linear-gradient(to top, black, transparent);
+        .hero-content {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .badge {
             background: rgba(0, 242, 254, 0.1);
             border: 1px solid var(--accent-cyan);
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 50px;
             color: var(--accent-cyan);
-            font-size: 0.8rem;
-            margin-bottom: 25px;
+            font-size: 0.75rem;
+            margin-bottom: 30px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 242, 254, 0.6); }
+        }
+
+        .greeting {
+            color: var(--text-gray);
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
             line-height: 1.1;
-            margin-bottom: 10px;
-            background: linear-gradient(to bottom, #fff, #888);
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
         }
 
         .job-title {
             color: var(--accent-cyan);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
-        .btn-container { display: flex; gap: 15px; z-index: 10; }
+        .hero-description {
+            max-width: 700px;
+            color: var(--text-gray);
+            margin: 20px auto 40px;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .btn-container { 
+            display: flex; 
+            gap: 20px; 
+            z-index: 10;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         
         .btn {
-            padding: 12px 30px;
-            border-radius: 8px;
+            padding: 14px 35px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-fill { background: var(--accent-cyan); color: #000; }
-        .btn-outline { border: 1px solid var(--glass-border); color: #fff; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2); }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
 
-        .container { max-width: 1000px; margin: auto; padding: 80px 20px; }
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
 
-        section { margin-bottom: 100px; }
-        h2 { font-size: 2rem; margin-bottom: 40px; position: relative; display: inline-block; }
-        h2::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 50%; height: 2px; background: var(--accent-cyan); }
+        .btn-fill { 
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff; 
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
+        }
 
-        .timeline { border-left: 1px solid #222; padding-left: 30px; }
+        .btn-outline { 
+            border: 2px solid var(--glass-border); 
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 40px rgba(0, 242, 254, 0.4); 
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .scroll-indicator i {
+            font-size: 2rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Container */
+        .container { 
+            max-width: 1100px; 
+            margin: auto; 
+            padding: 100px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        section { 
+            margin-bottom: 120px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 { 
+            font-size: 2.5rem; 
+            margin-bottom: 50px; 
+            position: relative; 
+            display: inline-block;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2::after { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            bottom: -10px; 
+            width: 60px; 
+            height: 3px; 
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+        }
+
+        /* Experience Timeline */
+        .timeline { 
+            border-left: 2px solid rgba(0, 242, 254, 0.2); 
+            padding-left: 40px;
+            margin-left: 20px;
+        }
+
         .timeline-card {
             background: var(--card-bg);
             border: 1px solid var(--glass-border);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
             position: relative;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            cursor: pointer;
         }
+
         .timeline-card::before {
-            content: ''; position: absolute; left: -36px; top: 30px;
-            width: 10px; height: 10px; background: var(--accent-cyan);
-            border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan);
+            content: '';
+            position: absolute;
+            left: -51px;
+            top: 35px;
+            width: 18px;
+            height: 18px;
+            background: var(--bg-dark);
+            border: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+            transition: all 0.3s;
         }
 
-        .info-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; }
+        .timeline-card:hover {
+            transform: translateX(10px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 40px rgba(0, 242, 254, 0.2);
+        }
 
-        .lang-container { margin-bottom: 20px; }
-        .lang-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500; }
-        .bar-bg { background: #1a1a1a; height: 8px; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), #7000ff); box-shadow: 0 0 10px var(--accent-cyan); }
+        .timeline-card:hover::before {
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.8);
+            transform: scale(1.2);
+        }
 
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .timeline-card h3 {
+            font-size: 1.4rem;
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .timeline-card .company {
+            color: var(--text-gray);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Info Grid */
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr; 
+            gap: 50px;
+        }
+
+        /* Language Bars */
+        .lang-container { 
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .lang-container:hover {
+            transform: translateX(5px);
+        }
+
+        .lang-label { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 10px; 
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .bar-bg { 
+            background: rgba(255, 255, 255, 0.05); 
+            height: 10px; 
+            border-radius: 10px; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); 
+            box-shadow: 0 0 15px var(--accent-cyan);
+            border-radius: 10px;
+            transition: width 1s ease;
+            width: 0;
+        }
+
+        .bar-fill.animate {
+            animation: fillBar 1.5s ease forwards;
+        }
+
+        @keyframes fillBar {
+            from { width: 0; }
+        }
+
+        /* Skills Grid */
+        .skills-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+            gap: 20px;
+        }
+
         .skill-box {
             background: var(--card-bg);
-            padding: 25px; text-align: center; border-radius: 12px;
-            border: 1px solid var(--glass-border); transition: 0.3s;
+            padding: 35px 25px;
+            text-align: center;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .skill-box i { font-size: 2rem; color: var(--accent-cyan); margin-bottom: 12px; }
 
+        .skill-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(112, 0, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .skill-box:hover::before {
+            opacity: 1;
+        }
+
+        .skill-box:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 15px 40px rgba(0, 242, 254, 0.3);
+        }
+
+        .skill-box i { 
+            font-size: 2.5rem; 
+            color: var(--accent-cyan); 
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .skill-box:hover i {
+            transform: scale(1.2) rotateY(360deg);
+            color: var(--accent-purple);
+        }
+
+        .skill-box p {
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Contact Card */
         .contact-card {
             background: var(--card-bg);
-            padding: 40px; border-radius: 20px; border: 1px solid var(--glass-border);
-            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
-        input, textarea {
-            width: 100%; padding: 12px; margin-bottom: 15px;
-            background: rgba(255,255,255,0.05); border: 1px solid #333;
-            border-radius: 6px; color: #fff;
-        }
-        .submit-btn { width: 100%; padding: 12px; background: var(--accent-cyan); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+        .contact-info h2 {
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            background: rgba(0, 242, 254, 0.1);
+            transform: translateX(10px);
+        }
+
+        .contact-item i {
+            color: var(--accent-cyan);
+            font-size: 1.3rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #fff;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-gray);
+            border-top: 1px solid var(--glass-border);
+            background: rgba(5, 7, 10, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            nav { padding: 15px 20px; }
+            .nav-links { gap: 20px; font-size: 0.85rem; }
             .info-grid, .contact-card { grid-template-columns: 1fr; }
+            h2 { font-size: 2rem; }
+            .timeline { padding-left: 25px; margin-left: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links { display: none; }
+            .btn-container { flex-direction: column; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Particles Background -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 80%; top: 80%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 50%; top: 50%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 90%; top: 10%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 30%; top: 70%; animation-delay: 8s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">JRT</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="badge">✨ Welcome to my Portfolio Thanks for Visiting ✨</div>
-        <p style="color: var(--text-gray); letter-spacing: 2px;">HELLO, I'M</p>
-        <h1>Jaya Ranganadh<br>Tungala</h1>
-        <div class="job-title">CIVIL ENGINEER</div>
-        <div class="btn-container">
-            <a href="Ranganadh_CV.pdf" class="btn btn-fill" download><i class="fas fa-download"></i> DOWNLOAD CV</a>
-            <a href="#contact" class="btn btn-outline"><i class="fas fa-paper-plane"></i> CONTACT ME</a>
+        <div class="hero-content">
+            <div class="badge">✨ Welcome to my Portfolio Thanks for Visiting ✨</div>
+            <p class="greeting">HELLO, I'M</p>
+            <h1>Jaya Ranganadh<br>Tungala</h1>
+            <div class="job-title">CIVIL ENGINEER</div>
+            <p class="hero-description">
+                Experienced Structure Engineer with over <strong>6+ years</strong> of expertise in Planning & 
+                Execution of infrastructure development projects. Specialized in structural design, quality control, 
+                and project management for large-scale civil engineering projects across highways, bridges, and commercial buildings.
+            </p>
+            <div class="btn-container">
+                <a href="#" class="btn btn-fill" download><i class="fas fa-download"></i> DOWNLOAD CV</a>
+                <a href="#contact" class="btn btn-outline"><i class="fas fa-eye"></i> VIEW CV</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
         </div>
     </section>
 
     <div class="container">
         
+        <!-- Work Experience -->
         <section id="experience">
             <h2>Work Experience</h2>
             <div class="timeline">
                 <div class="timeline-card">
-                    <span style="color: var(--accent-cyan);">Feb 2025 - Present</span>
+                    <span style="color: var(--accent-cyan); font-weight: 600;">Feb 2025 - Present</span>
                     <h3>Site Engineer</h3>
-                    <p style="color: var(--text-gray);">Megha Engineering and Infrastructure Limited</p>
-                    <small>Managing structural works like retaining walls and box culverts for road projects.</small>
+                    <p class="company">Megha Engineering and Infrastructure Limited</p>
+                    <small style="color: var(--text-gray);">Retaining walls, Box culverts & Over Bridge Approaches.</small>
                 </div>
                 <div class="timeline-card">
-                    <span style="color: var(--accent-cyan);">June 2023 - Feb 2025</span>
+                    <span style="color: var(--accent-cyan); font-weight: 600;">June 2023 - Feb 2025</span>
                     <h3>Planning Engineer</h3>
-                    <p style="color: var(--text-gray);">GVPR Engineers Limited</p>
-                    <small>DPR, DLR, and pipeline network approvals for PHED Rajasthan.</small>
+                    <p class="company">GVPR Engineers Limited</p>
+                    <small style="color: var(--text-gray);">Documentation for JJM Project Rajasthan & PHED approvals.</small>
                 </div>
                 <div class="timeline-card">
-                    <span style="color: var(--accent-cyan);">July 2020 - June 2023</span>
-                    <h3>Jr Engineer</h3>
-                    <p style="color: var(--text-gray);">Megha Engineering and Infrastructure Limited</p>
-                    <small>Billing and documentation for Mission Bhageeratha & Amrut projects.</small>
-                </div>
-            </div>
-        </section>
-
-        <div class="info-grid">
-            <section id="education">
-                <h2>Education</h2>
-                <div class="timeline-card">
-                    <h3>Civil Engineering (B.Tech)</h3>
-                    <p>Dr Paulraj Engineering College | 7.13 CGPA</p>
-                    <small>2019 - 2022</small>
-                </div>
-                <div class="timeline-card">
-                    <h3>Diploma Civil Engineering</h3>
-                    <p>AANM & VVRSR Polytechnic | 79.38%</p>
-                    <small>2016 - 2019</small>
-                </div>
-            </section>
-
-            <section id="languages">
-                <h2>Languages</h2>
-                <div class="lang-container">
-                    <div class="lang-label"><span>Telugu</span><span>Native</span></div>
-                    <div class="bar-bg"><div class="bar-fill" style="width: 100%;"></div></div>
-                </div>
-                <div class="lang-container">
-                    <div class="lang-label"><span>English</span><span>Fluent</span></div>
-                    <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div>
-                </div>
-                <div class="lang-container">
-                    <div class="lang-label"><span>Hindi</span><span>Conversational</span></div>
-                    <div class="bar-bg"><div class="bar-fill" style="width: 70%;"></div></div>
-                </div>
-            </section>
-        </div>
-
-        <section id="skills">
-            <h2>Technical Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-box"><i class="fas fa-pencil-ruler"></i><p>AutoCAD</p></div>
-                <div class="skill-box"><i class="fas fa-file-excel"></i><p>MS Excel</p></div>
-                <div class="skill-box"><i class="fas fa-layer-group"></i><p>BBS Prep</p></div>
-                <div class="skill-box"><i class="fas fa-hard-hat"></i><p>Site Execution</p></div>
-            </div>
-        </section>
-
-        <section id="contact" class="contact-card">
-            <div>
-                <h2>Get In Touch</h2>
-                <p style="color: var(--text-gray); margin-top: 15px;">Avanigadda, Krishna, AP. PIN - 521121</p>
-                <div style="margin-top: 25px;">
-                    <p><i class="fas fa-envelope" style="color: var(--accent-cyan); margin-right: 10px;"></i> ranganadhtungala@gmail.com</p>
-                    <p style="margin-top: 10px;"><i class="fas fa-phone" style="color: var(--accent-cyan); margin-right: 10px;"></i> +91 9010844151</p>
-                </div>
-            </div>
-            <form name="contact" method="POST" data-netlify="true">
-                <input type="text" name="name" placeholder="Full Name" required>
-                <input type="email" name="email" placeholder="Email Address" required>
-                <textarea name="message" rows="4" placeholder="Your Message" required></textarea>
-                <button type="submit" class="submit-btn">SEND MESSAGE</button>
-            </form>
-        </section>
-    </div>
-
-    <footer style="text-align: center; padding: 40px; color: #444; border-top: 1px solid #111;">
-        &copy; 2026 Jaya Ranganadh Tungala | Civil Engineer
-    </footer>
-
-</body>
-            </html>
-                    
+                    <span style="color: var(--accent-cyan); font-weight: 600;">July 2020 - June 2023</span>
+                    <h3>Jr Engineer
